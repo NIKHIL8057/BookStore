@@ -13,14 +13,14 @@ orderRouter.post("/place-order",authenticatetoken, async(req,res) => {
        const {order} = req.body;
     
        for(const orderData of order) {
-        const newOrder = new Order({user: id, book: orderData._id})
+        const newOrder = new userOrder({User: id, book: orderData._id})
         const orderDataDB = await newOrder.save()
 
         // saving order in userModel
-        await User.findByIdAndUpdate(id, { $push: { order: orderDataDB._id }, })
+        await User.findByIdAndUpdate(id, { $push: { orders: orderDataDB._id }, })
 
         // clearing cart
-        await User.findByIdAndUpdate(id, { $pull: { cart: orderDataDB._id }, })
+        await User.findByIdAndUpdate(id, { $pull: { cart: orderData._id }, })
        }
        
        return res.status(200).json({success:true,message: "Order place successfully"})
